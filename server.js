@@ -1,14 +1,16 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser')
-const port = 8080;
+const port = process.env.PORT || 8080;
 const MongoClient = require('mongodb').MongoClient;
 
 const router = require('./route/route');
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use("/api", router);
-
+app.get("/",(req, res) => {
+    res.send({ message: 'welcome'});
+})
 app.use((req, res) => {
     res.status(404).send({ message: 'Route' + req.url + ' Not found.' });
 })
@@ -24,7 +26,7 @@ MongoClient.connect(dbUrl, options, (err, database) => {
         process.exit(1)
     }
     app.locals.db = database.db('Dummydata');
-    console.log( app.locals.db);
+   
     app.listen(port, () => console.log(`Example app listening on port port!`))
 })
 
